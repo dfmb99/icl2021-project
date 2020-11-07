@@ -12,7 +12,7 @@ public class Parser {
     while (true) {
     try {
     exp = parser.Start();
-    System.out.println( exp.eval() );
+    System.out.println( exp.eval( new Environment()) );
     } catch (Exception e) {
       System.out.println ("Syntax Error!");
       parser.ReInit(System.in);
@@ -33,6 +33,14 @@ SKIP :
 
 TOKEN :
 {
+  < DEF: "def">
+  |
+  < IN: "in">
+  |
+  < EQ: "=">
+  |
+  < END: "end">
+  |
   < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
   |
   < Num: (["0"-"9"]) + >
@@ -63,11 +71,11 @@ ASTNode Exp() :
 { Token op;
   ASTNode t1, t2; }
 {
-     t1=Term() ( ( op=<PLUS> | op=<MINUS> ) t2=Term() 
+     t1= Term() ( ( op=<PLUS> | op=<MINUS> ) t2=Term()
                  { if (op.kind == PLUS) 
                          t1 = new ASTPlus(t1,t2);
                    else  t1 = new ASTSub(t1,t2);
-                 } 
+                 }
                ) *
      { return t1; } 
 }
@@ -76,21 +84,26 @@ ASTNode Term() :
 {Token op;
   ASTNode t1, t2;}
 {
-     t1 = Fact() ( ( op=<TIMES> | op=<DIV> ) t2 = Term() 
+    t1 = Fact() ( ( op=<TIMES> | op=<DIV> ) t2 = Fact() 
  		               { if (op.kind == TIMES) 
                           t1 = new ASTMult(t1,t2);
                      else  t1 = new ASTDiv(t1,t2);       
                   } 
-		            )?
+		            ) * 
      { return t1; } 
 }
 
 
 ASTNode Fact() :
 { Token n; 
-  ASTNode t;}
+  ASTNode t, ei, b;}
 {
-   ( n=<Num> { t = new ASTNum(Integer.parseInt(n.image)); } | <LPAR> t=Exp() <RPAR> )
+   ( n=<Num> { t = new ASTNum(Integer.parseInt(n.image)); }
+   | <MINUS> n=<Num> { t= new ASTNum(-Integer.parseInt(n.image));}
+   //| ((<MINUS> <MINUS>)+ n=<Num> | (<PLUS>)+ n=<Num>) { t= new ASTNum(Integer.parseInt(n.image));}
+   | n=<Id> {t = new ASTId(n.image);}
+   | <LPAR> t=Exp() <RPAR>
+   | <DEF> (n=<Id> <EQ> ei=Exp())+ <IN> b=Exp() <END> { t = new ASTDef(n.image, ei, b); } )
    { return t; }
 }
 

@@ -1,9 +1,35 @@
-class Environment {
-	Environment beginScope();
+import java.util.HashMap;
+import java.util.Map;
 
-	Environment endScope();
+public class Environment {
+	Environment ancestor;
+	Environment curr;
+	Map<String, Integer> map;
 
-	void assoc(String id, int val);
+	public Environment() {
+		ancestor = null;
+		curr = this;
+		map = new HashMap<>();
+	}
 
-	int find();
+	Environment beginScope() {
+		ancestor = curr;
+		curr = new Environment();
+		curr.map = ancestor.map;
+		return curr;
+	}
+
+	Environment endScope() {
+		curr = ancestor;
+		ancestor = curr.ancestor;
+		return curr;
+	}
+
+	void assoc(String id, int val) {
+		curr.map.put(id, val);
+	}
+
+	int find(String id) {
+		return curr.map.get(id);
+	}
 }
