@@ -21,7 +21,6 @@ public class Environment {
 
 	Environment endScope() {
 		curr = ancestor;
-		ancestor = curr.ancestor;
 		return curr;
 	}
 
