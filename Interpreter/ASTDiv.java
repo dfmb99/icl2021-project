@@ -11,4 +11,10 @@ public class ASTDiv implements ASTNode {
 	    int v2 = rhs.eval(e);
 	    return v1/v2;
     }
+    public void compile(CodeBlock c, Environment e)
+    {
+            lhs.compile(c,e);
+            rhs.compile(c,e);
+            c.emit("idiv");
+    }
 }

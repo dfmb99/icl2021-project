@@ -6,7 +6,7 @@ int val;
 
         public ASTNum(int n)
         {
-	   val = n;
+	    val = n;
         }
 
 }

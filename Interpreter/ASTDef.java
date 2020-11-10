@@ -5,6 +5,9 @@ public class ASTDef implements ASTNode {
 	List<ASTNode> init;
 	ASTNode body;
 
+	//Compiler
+	List<Bind> bindings; //each Bind a pair (String, ASTNode)
+
 	public ASTDef(List<Token> ids, List<ASTNode> init, ASTNode body) {
 		this.ids = ids;
 		this.init = init;
@@ -20,5 +23,10 @@ public class ASTDef implements ASTNode {
 		int val = body.eval(e);
 		e.endScope();
 		return val;
+	}
+
+	public void compile(CodeBlock c, Environment e){
+
+
 	}
 }
