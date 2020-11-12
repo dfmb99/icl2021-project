@@ -11,7 +11,7 @@
 
 .method public static main([Ljava/lang/String;)V
        ; set limits used by this method
-       .limit locals  2
+       .limit locals  4
        .limit stack 256
 
        ; setup local variables:
@@ -22,18 +22,33 @@
        ; place your bytecodes here
        ; START
 
-       sipush 2
-       sipush 2
-       iadd
-       sipush 2
-       imul
-
+     aconst_null
+     astore_3
+     new frame_0
+     dup
+     invokespecial frame_0/<init>()V
+     dup
+     aload_3
+     outfield frame_0/sl Ljava/lang/Object;
+     dup
+     astore_3
+     dup
+     sipush3
+     outfield frame_0/v0 I
+     pop
+     sipush 3
+     sipush 3
+     iadd
+     aload_3
+     getfield frame_0/sl Ljava/lang/Object;
+     astore_3
 
        ; END
 
 
        ; convert to String;
        invokestatic java/lang/String/valueOf(I)Ljava/lang/String;
+       
        ; call println 
        invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
 
