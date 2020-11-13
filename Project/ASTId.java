@@ -6,7 +6,12 @@ public class ASTId implements ASTNode {
 	}
 
 	@Override
-	public int eval(Environment e) {
+	public int eval(EnvironmentInt e) {
 		return e.find(id);
+	}
+
+	@Override
+	public void compile(CodeBlock c, EnvironmentComp e) {
+
 	}
 }

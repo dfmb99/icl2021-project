@@ -6,12 +6,12 @@ public class ASTDiv implements ASTNode {
     {
         lhs = l; rhs = r;
     }
-    public int eval(Environment e) {
+    public int eval(EnvironmentInt e) {
         int v1 = lhs.eval(e);
 	    int v2 = rhs.eval(e);
 	    return v1/v2;
     }
-    public void compile(CodeBlock c, Environment e)
+    public void compile(CodeBlock c, EnvironmentComp e)
     {
             lhs.compile(c,e);
             rhs.compile(c,e);

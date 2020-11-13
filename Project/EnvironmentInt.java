@@ -1,32 +1,26 @@
 import java.util.HashMap;
 import java.util.Map;
-import java.util.*;
 
-public class Environment {
-	Environment ancestor;
-	Environment curr;
+public class EnvironmentInt {
+	EnvironmentInt ancestor;
+	EnvironmentInt curr;
 	Map<String, Integer> map;
-	Stack<> stack;
 
-
-	public Environment() {
+	public EnvironmentInt() {
 		ancestor = null;
 		curr = this;
 		map = new HashMap<>();
-		stack = new Stack<>();
 	}
 
-	Environment beginScope() {
+	EnvironmentInt beginScope() {
 		ancestor = curr;
-		curr = new Environment();
+		curr = new EnvironmentInt();
 		curr.map = ancestor.map;
-		stack.push(curr);
 		return curr;
 	}
 
-	Environment endScope() {
+	EnvironmentInt endScope() {
 		curr = ancestor;
-		stack.pop(curr);
 		return curr;
 	}
 

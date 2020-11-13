@@ -6,7 +6,7 @@ public class ASTDef implements ASTNode {
 	ASTNode body;
 
 	//Compiler
-	List<Bind> bindings; //each Bind a pair (String, ASTNode)
+	//List<Bind> bindings; //each Bind a pair (String, ASTNode)
 
 	public ASTDef(List<Token> ids, List<ASTNode> init, ASTNode body) {
 		this.ids = ids;
@@ -15,7 +15,7 @@ public class ASTDef implements ASTNode {
 	}
 
 	@Override
-	public int eval(Environment e) {
+	public int eval(EnvironmentInt e) {
 		e.beginScope();
 		for(int i= 0; i < ids.size(); i++) {
 			e.assoc(ids.get(i).image, init.get(i).eval(e));
@@ -25,7 +25,7 @@ public class ASTDef implements ASTNode {
 		return val;
 	}
 
-	public void compile(CodeBlock c, Environment e){
+	public void compile(CodeBlock c, EnvironmentComp e){
 
 
 	}

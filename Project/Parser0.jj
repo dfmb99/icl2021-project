@@ -1,6 +1,8 @@
 PARSER_BEGIN(Parser)
 
 import java.util.*;
+import java.io.PrintStream;
+import java.io.FileOutputStream;
 
 /** ID lister. */
 public class Parser {
@@ -13,7 +15,10 @@ public class Parser {
     while (true) {
     try {
     exp = parser.Start();
-    System.out.println( exp.eval( new Environment()) );
+    //System.out.println( exp.eval( new EnvironmentInt()) );
+    CodeBlock c = new CodeBlock();
+    exp.compile( c, new EnvironmentComp());
+    c.dump(new PrintStream(new FileOutputStream("../../test.j", false)) );
     } catch (Exception e) {
       System.out.println ("Syntax Error!");
       e.printStackTrace();
