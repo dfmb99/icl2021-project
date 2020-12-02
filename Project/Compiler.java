@@ -4,8 +4,7 @@ import java.io.PrintStream;
 public class Compiler {
 
     public static void main(String args[]) {
-        System.out.println("");
-        System.out.println("Code to be compiled: ");
+        System.out.println("Insert code to be compiled: ");
         Parser parser = new Parser(System.in);
         ASTNode exp;
 

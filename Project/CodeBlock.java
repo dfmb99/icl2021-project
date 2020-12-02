@@ -25,11 +25,24 @@ class CodeBlock {
     }
 
     public void dump(PrintStream f) {
-        begin(f);
+        f.println(".class public Demo");
+        f.println(".super java/lang/Object");
+        f.println(".method public <init>()V");
+        f.println("aload_0");
+        f.println("invokenonvirtual java/lang/Object/<init>()V");
+        f.println("return");
+        f.println(".end method");
+        f.println(".method public static main([Ljava/lang/String;)V");
+        f.println(".limit locals  10");
+        f.println(".limit stack 256");
+        f.println("getstatic java/lang/System/out Ljava/io/PrintStream;");
         for (int i = 0; i < pos; i++) {
             f.println(code[i]);
         }
-        end(f);
+        f.println("invokestatic java/lang/String/valueOf(I)Ljava/lang/String;");
+        f.println("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
+        f.println("return");
+        f.println(".end method");
     }
 
     public void newFrame(int depth, int num) {
@@ -63,6 +76,7 @@ class CodeBlock {
     }
 
     private void begin(PrintStream f) {
+
         f.print(".class public Demo\n" +
                 ".super java/lang/Object\n" +
                 "\n" +
