@@ -1,6 +1,8 @@
 public class Interpreter {
     /** Main entry point. */
     public static void main(String args[]) {
+        System.out.println("");
+        System.out.println("Code to be interpreted: ");
         Parser parser = new Parser(System.in);
         ASTNode exp;
 

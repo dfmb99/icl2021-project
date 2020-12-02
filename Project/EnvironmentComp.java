@@ -1,34 +1,47 @@
 import java.util.HashMap;
 import java.util.Map;
 
-public class EnvironmentComp {
+public class EnvironmentComp implements Environment<Bind> {
     EnvironmentComp ancestor;
     EnvironmentComp curr;
-    Map<String, Integer> map;
+    Map<String, Bind> map;
+    int depth;
 
     public EnvironmentComp() {
         ancestor = null;
         curr = this;
         map = new HashMap<>();
+        depth = 0;
     }
 
-    EnvironmentComp beginScope() {
+    @Override
+    public Environment	beginScope() {
         ancestor = curr;
         curr = new EnvironmentComp();
         curr.map = ancestor.map;
+        depth++;
         return curr;
     }
 
-    EnvironmentComp endScope() {
+    @Override
+    public Environment	endScope(){
         curr = ancestor;
+        depth--;
         return curr;
     }
 
-    void assoc(String id, int val) {
-        curr.map.put(id, val);
+    @Override
+    public int	depth() {
+        return depth;
     }
 
-    int find(String id) {
+    @Override
+    public void assoc(String id, Bind b) {
+        curr.map.put(id, b);
+    }
+
+    @Override
+    public Bind find(String id) {
         return curr.map.get(id);
     }
 }

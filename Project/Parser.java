@@ -7,26 +7,6 @@ import java.io.FileOutputStream;
 /** ID lister. */
 public class Parser implements ParserConstants {
 
-  /** Main entry point. */
-  public static void main(String args[]) {
-    Parser parser = new Parser(System.in);
-    ASTNode exp;
-
-    while (true) {
-    try {
-    exp = parser.Start();
-    //System.out.println( exp.eval( new EnvironmentInt()) );
-    CodeBlock c = new CodeBlock();
-    exp.compile( c, new EnvironmentComp());
-    c.dump(new PrintStream(new FileOutputStream("../../test.j", false)) );
-    } catch (Exception e) {
-      System.out.println ("Syntax Error!");
-      e.printStackTrace();
-      parser.ReInit(System.in);
-    }
-    }
-  }
-
   static final public ASTNode Start() throws ParseException {ASTNode t;
     t = Exp();
     jj_consume_token(EL);
