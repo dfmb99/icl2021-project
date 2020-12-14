@@ -10,6 +10,12 @@ public class ASTId implements ASTNode {
 		return e.find(id);
 	}
 
+	public IType typecheck(Environmnent<IType> tenv) {
+		return tenv.find(id);
+	}
+
+
+
 	@Override
 	public void compile(CodeBlock c, EnvironmentComp e) {
 		Bind b = e.find(id);

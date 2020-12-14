@@ -1,0 +1,7 @@
+class ASTNew implements ASTNode {
+
+
+
+
+
+}
