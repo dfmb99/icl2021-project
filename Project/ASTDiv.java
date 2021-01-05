@@ -1,3 +1,5 @@
+import exceptions.TypeError;
+
 public class ASTDiv implements ASTNode {
 
     private ASTNode lhs, rhs;
@@ -6,29 +8,16 @@ public class ASTDiv implements ASTNode {
     {
         lhs = l; rhs = r;
     }
-    public IValue eval(EnvironmentInt e) {
-        IValue v1 = lhs.eval(e);
+    public IValue eval(EnvironmentInt env) throws TypeError {
+        IValue v1 = lhs.eval(env);
         if (v1 instanceof VInt) {
-            IValue v2 = rhs.eval(e)
+            IValue v2 = rhs.eval(env);
             if (v2 instanceof VInt) {
-                return new Vint((VInt) v1).div(v2);
+                return new VInt(((VInt) v1).getVal() / ((VInt) v2).getVal());
             }
-            throw TypeError("/: argument is not an integer");
         }
+        throw new TypeError("/: argument is not an integer");
     }
-
-    public IType typecheck(Environmnent<ITtype> tenv) {
-
-        IType t1 = lhs.typecheck(tenv);
-        if (t1 instanceof TInt) {
-            IType v2 = rhs.typecheck(tenv)
-            if (v2 instanceof TInt) {
-                return new TInt()
-            }
-            throw TypeError(" +:argument is not an integer");
-        }
-    }
-
 
     public void compile(CodeBlock c, EnvironmentComp e)
     {

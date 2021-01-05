@@ -1,10 +1,10 @@
 import java.util.HashMap;
 import java.util.Map;
 
-	public class EnvironmentInt implements Environment<Integer> {
+	public class EnvironmentInt implements Environment<IValue> {
 	EnvironmentInt ancestor;
 	EnvironmentInt curr;
-	Map<String, Integer> map;
+	Map<String, IValue> map;
 	int depth;
 
 	public EnvironmentInt() {
@@ -24,7 +24,7 @@ import java.util.Map;
 	}
 
 	@Override
-	public Environment endScope() {
+	public Environment<IValue> endScope() {
 		curr = ancestor;
 		depth--;
 		return curr;
@@ -36,12 +36,12 @@ import java.util.Map;
 	}
 
 	@Override
-	public void assoc(String id, Integer bind) {
+	public void assoc(String id, IValue bind) {
 		curr.map.put(id, bind);
 	}
 
 	@Override
-	public Integer find(String id) {
+	public IValue find(String id) {
 		return curr.map.get(id);
 	}
 }

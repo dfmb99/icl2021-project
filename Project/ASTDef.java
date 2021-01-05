@@ -1,3 +1,5 @@
+import exceptions.TypeError;
+
 import java.util.List;
 
 public class ASTDef implements ASTNode {
@@ -12,16 +14,18 @@ public class ASTDef implements ASTNode {
 		this.body = body;
 	}
 
-	public int eval(EnvironmentInt e) {
+	@Override
+	public IValue eval(EnvironmentInt e) throws TypeError {
 		e.beginScope();
 		for(int i= 0; i < ids.size(); i++) {
 			e.assoc(ids.get(i).image, init.get(i).eval(e));
 		}
-		int val = body.eval(e);
+		IValue val = body.eval(e);
 		e.endScope();
 		return val;
 	}
 
+	@Override
 	public void compile(CodeBlock c, EnvironmentComp e){
 		e.beginScope();
 		int depth = e.depth -1;

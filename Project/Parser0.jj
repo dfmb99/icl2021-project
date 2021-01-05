@@ -20,6 +20,30 @@ SKIP :
 
 TOKEN :
 {
+  < PRINTLN: "println">
+  |
+  < PRINT: "print">
+  |
+  < DO: "do">
+  |
+  < WHILE: "while">
+  |
+  < ELSE: "else">
+  |
+  < THEN: "then">
+  |
+  < IF: "if">
+  |
+  < ASSIGN: ":=">
+  |
+  < EQCOMP: "==">
+  |
+  < DEREF: "!">
+  |
+  < NEW: "new">
+  |
+  < SEQ: ";">
+  |
   < DEF: "def">
   |
   < IN: "in">
@@ -50,11 +74,30 @@ TOKEN :
 ASTNode Start():
 { ASTNode t; }
 {
-   t = Exp() <EL>
+   t = ExpS()
    { return t; }
 }
+ASTNode ExpS():
+{ ASTNode t1, t2; }
+{
+   (<EL>)* t1 = Exp() (<SEQ>)* (<EL>)* ( (<EL>)* t2 = Exp() (<SEQ>)* (<EL>)*{ t1 = new ASTSeq(t1, t2); } ) *
+   { return t1; }
+}
 
-ASTNode Exp() :
+ASTNode Exp():
+{Token op;
+ ASTNode t, t1; }
+{
+    t = ExpA() ( ( op=<EQCOMP> | op=<ASSIGN> ) t1 = ExpA()
+    { if (op.kind == EQCOMP)
+        t = new ASTEq(t, t1);
+      else
+        t = new ASTAssign(t, t1);
+     } ) ?
+    { return t; }
+}
+
+ASTNode ExpA() :
 { Token op;
   ASTNode t1, t2; }
 {
@@ -85,12 +128,20 @@ ASTNode Fact() :
 { Token n;
  List<Token> ids = new ArrayList<>();
  List<ASTNode> init = new ArrayList<>();
-  ASTNode t, ei, b;}
+  ASTNode t, ei, b, f, cond, th, el;
+  el = null;
+  }
 {
    ( n=<Num> { t = new ASTNum(Integer.parseInt(n.image)); }
    | <MINUS> n=<Num> { t= new ASTNum(-Integer.parseInt(n.image));}
    | n=<Id> {t = new ASTId(n.image);}
-   | <LPAR> t=Exp() <RPAR>
-   | <DEF> (n=<Id> <EQ> ei=Exp() { ids.add(n); init.add(ei); } )+ <IN> b=Exp() <END> { t = new ASTDef(ids, init, b); } )
+   | <LPAR> t=ExpS() <RPAR>
+   | <DEF> (n=<Id> <EQ> ei=ExpS() { ids.add(n); init.add(ei); } )+ <IN> b=ExpS() <END> { t = new ASTDef(ids, init, b); }
+   | <NEW> f=Fact() {t =  new ASTNew(f);}
+   | <DEREF> f=Fact() {t =  new ASTDeref(f);}
+   | <IF> cond=ExpS() <THEN> th=ExpS() (<ELSE> el=ExpS())* <END> {t =  new ASTIf(cond,th,el); }
+   | <WHILE> cond=ExpS() <DO> th=ExpS() <END> {t =  new ASTWhile(cond, th); }
+   | <PRINT> t = Exp() { t = new ASTPrint(t); }
+   | <PRINTLN> t = Exp() { t = new ASTPrintln(t); } )
    { return t; }
 }

@@ -1,19 +1,27 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 public class Interpreter {
-    /** Main entry point. */
-    public static void main(String args[]) {
-        System.out.println("Insert code to be interpreted: ");
-        Parser parser = new Parser(System.in);
+    /**
+     * Main entry point.
+     */
+    public static void main(String args[]) throws FileNotFoundException {
+        if (args.length < 1) {
+            System.out.println("Missing argument: name of file to interpret");
+        }
+
+        Parser parser = new Parser(new FileInputStream(new File(args[0])));
         ASTNode exp;
 
-        while (true) {
-            try {
-                exp = parser.Start();
-                System.out.println( exp.eval( new EnvironmentInt()) );
-            } catch (Exception e) {
-                System.out.println ("Syntax Error!");
-                e.printStackTrace();
-                parser.ReInit(System.in);
-            }
+        try {
+            exp = parser.Start();
+            exp.eval(new EnvironmentInt());
+        } catch (Exception e) {
+            System.out.println("Syntax Error!");
+            e.printStackTrace();
         }
+
     }
 }

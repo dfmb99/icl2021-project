@@ -1,6 +1,8 @@
+import exceptions.TypeError;
+
 public interface ASTNode {
 
-    int eval(EnvironmentInt e);
+    IValue eval(EnvironmentInt e) throws TypeError;
     void compile(CodeBlock c, EnvironmentComp e);
 }
 

@@ -2,7 +2,7 @@ public class ASTNum implements ASTNode {
 
     int val;
 
-    public int eval(EnvironmentInt e) { return val; }
+    public IValue eval(EnvironmentInt e) { return new VInt(val); }
 
     @Override
     public void compile(CodeBlock c, EnvironmentComp e) {
