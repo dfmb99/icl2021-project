@@ -59,8 +59,10 @@ public class Parser implements ParserConstants {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case PRINTLN:
       case PRINT:
+      case BOOL:
       case WHILE:
       case IF:
+      case NEG:
       case DEREF:
       case NEW:
       case DEF:
@@ -127,7 +129,14 @@ t1 = new ASTSeq(t1, t2);
     t = ExpA();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case ASSIGN:
-    case EQCOMP:{
+    case EQCOMP:
+    case NOTEQ:
+    case GREAT:
+    case GREATTHAN:
+    case LESS:
+    case LESSTHAN:
+    case AND:
+    case OR:{
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case EQCOMP:{
         op = jj_consume_token(EQCOMP);
@@ -137,6 +146,34 @@ t1 = new ASTSeq(t1, t2);
         op = jj_consume_token(ASSIGN);
         break;
         }
+      case GREATTHAN:{
+        op = jj_consume_token(GREATTHAN);
+        break;
+        }
+      case GREAT:{
+        op = jj_consume_token(GREAT);
+        break;
+        }
+      case LESSTHAN:{
+        op = jj_consume_token(LESSTHAN);
+        break;
+        }
+      case LESS:{
+        op = jj_consume_token(LESS);
+        break;
+        }
+      case AND:{
+        op = jj_consume_token(AND);
+        break;
+        }
+      case OR:{
+        op = jj_consume_token(OR);
+        break;
+        }
+      case NOTEQ:{
+        op = jj_consume_token(NOTEQ);
+        break;
+        }
       default:
         jj_la1[7] = jj_gen;
         jj_consume_token(-1);
@@ -144,9 +181,23 @@ t1 = new ASTSeq(t1, t2);
       }
       t1 = ExpA();
 if (op.kind == EQCOMP)
-        t = new ASTEq(t, t1);
-      else
-        t = new ASTAssign(t, t1);
+          t = new ASTEq(t, t1);
+      else if (op.kind == ASSIGN)
+          t = new ASTAssign(t, t1);
+      else if (op.kind == GREATTHAN)
+          t = new ASTGreatThan(t, t1);
+      else if (op.kind == GREAT)
+          t = new ASTGreat(t, t1);
+      else if (op.kind == LESSTHAN)
+          t = new ASTLessThan(t, t1);
+      else if (op.kind == LESS)
+          t = new ASTLess(t, t1);
+      else if (op.kind == AND)
+          t = new ASTAnd(t, t1);
+      else if (op.kind == OR)
+          t = new ASTOr(t, t1);
+       else if (op.kind == NOTEQ)
+           t = new ASTNotEq(t, t1);
       break;
       }
     default:
@@ -202,7 +253,8 @@ if (op.kind == PLUS)
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case TIMES:
-      case DIV:{
+      case DIV:
+      case MOD:{
         ;
         break;
         }
@@ -219,6 +271,10 @@ if (op.kind == PLUS)
         op = jj_consume_token(DIV);
         break;
         }
+      case MOD:{
+        op = jj_consume_token(MOD);
+        break;
+        }
       default:
         jj_la1[12] = jj_gen;
         jj_consume_token(-1);
@@ -227,7 +283,10 @@ if (op.kind == PLUS)
       t2 = Fact();
 if (op.kind == TIMES)
                           t1 = new ASTMult(t1,t2);
-                     else  t1 = new ASTDiv(t1,t2);
+                     else if (op.kind == DIV)
+                        t1 = new ASTDiv(t1,t2);
+                     else if (op.kind == MOD)
+                         t1 = new ASTMod(t1,t2);
     }
 {if ("" != null) return t1;}
     throw new Error("Missing return statement in function");
@@ -246,8 +305,19 @@ t = new ASTNum(Integer.parseInt(n.image));
       }
     case MINUS:{
       jj_consume_token(MINUS);
-      n = jj_consume_token(Num);
-t= new ASTNum(-Integer.parseInt(n.image));
+      t = ExpS();
+t= new ASTMinus(t);
+      break;
+      }
+    case BOOL:{
+      n = jj_consume_token(BOOL);
+t= new ASTBool(Boolean.parseBoolean(n.image));
+      break;
+      }
+    case NEG:{
+      jj_consume_token(NEG);
+      t = ExpS();
+t = new ASTNeg(t);
       break;
       }
     case Id:{
@@ -362,11 +432,16 @@ t = new ASTPrintln(t);
   static private int jj_gen;
   static final private int[] jj_la1 = new int[16];
   static private int[] jj_la1_0;
+  static private int[] jj_la1_1;
   static {
 	   jj_la1_init_0();
+	   jj_la1_init_1();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x10000000,0x8000,0x10000000,0x14b164b0,0x10000000,0x8000,0x10000000,0x1800,0x1800,0xc00000,0xc00000,0x3000000,0x3000000,0x100000,0x100,0x4b164b0,};
+	   jj_la1_0 = new int[] {0x0,0x1000000,0x0,0x62e00970,0x0,0x1000000,0x0,0x1ff000,0x1ff000,0x80000000,0x80000000,0x0,0x0,0x20000000,0x200,0x62e00970,};
+	}
+	private static void jj_la1_init_1() {
+	   jj_la1_1 = new int[] {0x40,0x0,0x40,0x51,0x40,0x0,0x40,0x0,0x0,0x1,0x1,0xe,0xe,0x0,0x0,0x11,};
 	}
 
   /** Constructor with InputStream. */
@@ -512,7 +587,7 @@ t = new ASTPrintln(t);
   /** Generate ParseException. */
   static public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[29];
+	 boolean[] la1tokens = new boolean[39];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
@@ -523,10 +598,13 @@ t = new ASTPrintln(t);
 		   if ((jj_la1_0[i] & (1<<j)) != 0) {
 			 la1tokens[j] = true;
 		   }
+		   if ((jj_la1_1[i] & (1<<j)) != 0) {
+			 la1tokens[32+j] = true;
+		   }
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 29; i++) {
+	 for (int i = 0; i < 39; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;

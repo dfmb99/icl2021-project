@@ -24,6 +24,8 @@ TOKEN :
   |
   < PRINT: "print">
   |
+  < BOOL: "true" | "false">
+  |
   < DO: "do">
   |
   < WHILE: "while">
@@ -37,6 +39,22 @@ TOKEN :
   < ASSIGN: ":=">
   |
   < EQCOMP: "==">
+  |
+  < NOTEQ: "!=">
+  |
+  < GREAT: ">">
+  |
+  < GREATTHAN: ">=">
+  |
+  < LESS: "<">
+  |
+  < LESSTHAN: "<=">
+  |
+  < AND: "&&">
+  |
+  < OR: "||">
+  |
+  < NEG: "~">
   |
   < DEREF: "!">
   |
@@ -64,6 +82,8 @@ TOKEN :
   |
   < DIV : "/">
   |
+  < MOD : "%">
+  |
   < LPAR : "(" >
   |
   < RPAR : ")" >
@@ -88,11 +108,25 @@ ASTNode Exp():
 {Token op;
  ASTNode t, t1; }
 {
-    t = ExpA() ( ( op=<EQCOMP> | op=<ASSIGN> ) t1 = ExpA()
+    t = ExpA() ( ( op=<EQCOMP> | op=<ASSIGN> | op=<GREATTHAN> | op=<GREAT> | op=<LESSTHAN> | op=<LESS> | op=<AND> | op=<OR> | op=<NOTEQ>) t1 = ExpA()
     { if (op.kind == EQCOMP)
-        t = new ASTEq(t, t1);
-      else
-        t = new ASTAssign(t, t1);
+          t = new ASTEq(t, t1);
+      else if (op.kind == ASSIGN)
+          t = new ASTAssign(t, t1);
+      else if (op.kind == GREATTHAN)
+          t = new ASTGreatThan(t, t1);
+      else if (op.kind == GREAT)
+          t = new ASTGreat(t, t1);
+      else if (op.kind == LESSTHAN)
+          t = new ASTLessThan(t, t1);
+      else if (op.kind == LESS)
+          t = new ASTLess(t, t1);
+      else if (op.kind == AND)
+          t = new ASTAnd(t, t1);
+      else if (op.kind == OR)
+          t = new ASTOr(t, t1);
+       else if (op.kind == NOTEQ)
+           t = new ASTNotEq(t, t1);
      } ) ?
     { return t; }
 }
@@ -114,10 +148,13 @@ ASTNode Term() :
 {Token op;
   ASTNode t1, t2;}
 {
-    t1 = Fact() ( ( op=<TIMES> | op=<DIV> ) t2 = Fact()
+    t1 = Fact() ( ( op=<TIMES> | op=<DIV> | op=<MOD> ) t2 = Fact()
  		               { if (op.kind == TIMES)
                           t1 = new ASTMult(t1,t2);
-                     else  t1 = new ASTDiv(t1,t2);
+                     else if (op.kind == DIV)
+                        t1 = new ASTDiv(t1,t2);
+                     else if (op.kind == MOD)
+                         t1 = new ASTMod(t1,t2);
                   }
 		            ) *
      { return t1; }
@@ -133,7 +170,9 @@ ASTNode Fact() :
   }
 {
    ( n=<Num> { t = new ASTNum(Integer.parseInt(n.image)); }
-   | <MINUS> n=<Num> { t= new ASTNum(-Integer.parseInt(n.image));}
+   | <MINUS> t=ExpS() { t= new ASTMinus(t);}
+   | n=<BOOL> { t= new ASTBool(Boolean.parseBoolean(n.image));}
+   | <NEG> t=ExpS() { t = new ASTNeg(t); }
    | n=<Id> {t = new ASTId(n.image);}
    | <LPAR> t=ExpS() <RPAR>
    | <DEF> (n=<Id> <EQ> ei=ExpS() { ids.add(n); init.add(ei); } )+ <IN> b=ExpS() <END> { t = new ASTDef(ids, init, b); }
