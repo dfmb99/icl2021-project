@@ -4,6 +4,11 @@ public class ASTMult implements ASTNode {
 
     ASTNode lhs, rhs;
 
+    public ASTMult(ASTNode l, ASTNode r) {
+        lhs = l;
+        rhs = r;
+    }
+
     public IValue eval(EnvironmentInt env) throws TypeError {
         IValue v1 = lhs.eval(env);
         if (v1 instanceof VInt) {
@@ -15,15 +20,22 @@ public class ASTMult implements ASTNode {
         throw new TypeError("*: argument is not an integer");
     }
 
-    public ASTMult(ASTNode l, ASTNode r) {
-        lhs = l;
-        rhs = r;
+    public void compile(CodeBlock c, EnvironmentComp e, Environment<IType> eType) throws TypeError {
+        lhs.compile(c, e, eType);
+        rhs.compile(c, e, eType);
+        c.emit("imul");
     }
 
-    public void compile(CodeBlock c, EnvironmentComp e) {
-        lhs.compile(c, e);
-        rhs.compile(c, e);
-        c.emit("imul");
+    @Override
+    public IType typecheck(Environment<IType> env) throws TypeError {
+        IType t1 = lhs.typecheck(env);
+        if (t1 instanceof TInt) {
+            IType v2 = rhs.typecheck(env);
+            if (v2 instanceof TInt) {
+                return new TInt();
+            }
+        }
+        throw new TypeError("+: argument is not an integer");
     }
 }
 

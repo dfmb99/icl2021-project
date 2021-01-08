@@ -20,9 +20,16 @@ public class ASTPrintln implements ASTNode {
         return new VVoid();
     }
 
-    public void compile(CodeBlock c, EnvironmentComp e) {
+    @Override
+    public void compile(CodeBlock c, EnvironmentComp e, Environment<IType> eType) throws TypeError {
 
     }
+
+    @Override
+    public IType typecheck(Environment<IType> env) throws TypeError {
+        return null;
+    }
+
 }
 
 

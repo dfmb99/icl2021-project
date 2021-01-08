@@ -26,7 +26,7 @@ public class ASTDef implements ASTNode {
 	}
 
 	@Override
-	public void compile(CodeBlock c, EnvironmentComp e){
+	public void compile(CodeBlock c, EnvironmentComp e, Environment<IType> eType) throws TypeError{
 		e.beginScope();
 		int depth = e.depth -1;
 		String frameName = "frame_" + depth ;
@@ -48,11 +48,16 @@ public class ASTDef implements ASTNode {
 			String slot = "v"+i;
 			e.assoc(ids.get(i).image, new Bind(depth, init.get(i), slot));
 			c.emit("dup");
-			init.get(i).compile(c, e);
+			init.get(i).compile(c, e, eType);
 			c.emit(String.format("putfield %s/%s I", frameName, slot));
 		}
 		c.emit("pop");
-		body.compile(c, e);
+		body.compile(c, e, eType);
 		e.endScope();
+	}
+
+	@Override
+	public IType typecheck(Environment<IType> env) throws TypeError {
+		return null;
 	}
 }

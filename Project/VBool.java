@@ -7,4 +7,8 @@ public class VBool implements IValue{
         return v;
     }
 
+    @Override
+    public IValue eval(EnvironmentInt e) {
+        return null;
+    }
 }

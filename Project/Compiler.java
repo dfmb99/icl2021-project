@@ -11,7 +11,7 @@ public class Compiler {
         try {
             exp = parser.Start();
             CodeBlock c = new CodeBlock();
-            exp.compile(c, new EnvironmentComp());
+            exp.compile(c, new EnvironmentComp(), new EnvironmentType());
             c.dump(new PrintStream(new FileOutputStream("Demo.j", false)));
             System.out.println("[Compiler] Generated Demo.j");
         } catch (Exception e) {

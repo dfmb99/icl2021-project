@@ -20,7 +20,19 @@ class ASTMod implements ASTNode {
     }
 
     @Override
-    public void compile(CodeBlock c, EnvironmentComp e) {
+    public void compile(CodeBlock c, EnvironmentComp e, Environment<IType> eType) throws TypeError {
 
+    }
+
+    @Override
+    public IType typecheck(Environment<IType> env) throws TypeError {
+        IType t1 = lhs.typecheck(env);
+        if (t1 instanceof TInt) {
+            IType v2 = rhs.typecheck(env);
+            if (v2 instanceof TInt) {
+                return new TInt();
+            }
+        }
+        throw new TypeError("+: argument is not an integer");
     }
 }

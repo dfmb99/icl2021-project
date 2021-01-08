@@ -15,4 +15,8 @@ class VMCell implements IValue {
         v = v0;
     }
 
+    @Override
+    public IValue eval(EnvironmentInt e) {
+        return null;
+    }
 }

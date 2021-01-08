@@ -13,7 +13,7 @@ public class ASTId implements ASTNode {
     }
 
     @Override
-    public void compile(CodeBlock c, EnvironmentComp e) {
+    public void compile(CodeBlock c, EnvironmentComp e, Environment<IType> eType) throws TypeError {
         Bind b = e.find(id);
         int depth = e.depth();
         c.emit("aload_0");
@@ -22,5 +22,10 @@ public class ASTId implements ASTNode {
             c.emit(String.format("getfield frame_%d/sl Lframe_%d;", depth, depth - 1));
         }
         c.emit(String.format("getfield frame_%d/%s I", depth - 1, b.getSlot()));
+    }
+
+    @Override
+    public IType typecheck(Environment<IType> env) throws TypeError {
+        return env.find(id);
     }
 }

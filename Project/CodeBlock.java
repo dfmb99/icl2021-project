@@ -75,4 +75,7 @@ class CodeBlock {
         }
     }
 
+    public int CountLabels(int i) {
+        return i;
+    }
 }

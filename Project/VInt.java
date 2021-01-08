@@ -8,4 +8,9 @@ class VInt implements IValue {
     public int getVal() {
         return v;
     }
+
+    @Override
+    public IValue eval(EnvironmentInt e) {
+        return null;
+    }
 }

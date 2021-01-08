@@ -24,7 +24,13 @@ class ASTEq implements ASTNode {
     }
 
     @Override
-    public void compile(CodeBlock c, EnvironmentComp e) {
+    public void compile(CodeBlock c, EnvironmentComp e, Environment<IType> eType) throws TypeError {
 
     }
+
+    @Override
+    public IType typecheck(Environment<IType> env) throws TypeError {
+        return null;
+    }
+
 }

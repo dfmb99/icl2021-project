@@ -32,7 +32,19 @@ class ASTIf implements ASTNode {
     }
 
     @Override
-    public void compile(CodeBlock c, EnvironmentComp e) {
+    public void compile(CodeBlock c, EnvironmentComp e, Environment<IType> eType) throws TypeError {
 
     }
-}
+
+    @Override
+    public IType typecheck(Environment<IType> env) throws TypeError {
+            IType t1 = cond.typecheck(env);
+            if (t1 instanceof  TBool) {
+                IType tt = th.typecheck(env);
+                IType te = el.typecheck(env);
+                if (tt.equals(te)) return te;
+                throw new TypeError("if: mismatch in then / else branch types");
+            }
+            throw new TypeError("if: condition is non boolean");
+        }
+    }
